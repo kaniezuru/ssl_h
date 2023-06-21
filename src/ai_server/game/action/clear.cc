@@ -6,7 +6,7 @@
 #include "ai_server/model/motion/walk_forward.h"
 #include "ai_server/model/motion/turn_left.h"
 #include "ai_server/model/motion/turn_right.h"
-
+#include <iostream>//omega表示のため
 
 namespace ai_server::game::action {
 clear::clear(context& ctx, unsigned int id) : base(ctx, id) {}
@@ -25,12 +25,12 @@ model::command clear::execute() {
  const auto robot = our_robots.at(id_);
  // 自分とボールの位置を取得
  const auto robot_pos = util::math::position(robot);
- const auto ball_pos = util::math::position(world().ball());
- auto omega = 0.5;      // mw
+ const auto ball_pos = util::math::position(world().ball());      // mw
  // 前進
  command.set_motion(std::make_shared<model::motion::walk_forward>());
  // 向きが合っていなければ回転 (前進のモーションはキャンセルされる)
  constexpr double rot_th = 0.5;
+ auto omega = util::math::direction_from(util::math::direction(ball_pos,robot_pos),robot.theta());
  if (rot_th <
     util::math::inferior_angle(robot.theta(),
         util::math::direction(ball_pos, robot_pos))) {

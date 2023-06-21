@@ -277,7 +277,7 @@ private:
 
     model::refbox refbox{};
     std::unique_ptr<game::captain::base> captain{};
-    std::unique_ptr<game::captain::base> action{};        // mv
+    std::unique_ptr<game::action::base> action{};        // mv
     std::chrono::steady_clock::time_point prev_time{};
 
     for (;;) {
