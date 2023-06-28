@@ -3,7 +3,7 @@
 #include "move.h"
 #include "ai_server/util/math/angle.h"
 #include "ai_server/util/math/to_vector.h"
-#include <iostream>
+#include <iostream> //theta出力したい
 
 using boost::math::constants::pi;
 
@@ -16,7 +16,7 @@ move::move(context& ctx, unsigned int id)
       target_(0.0, 0.0, 0.0),
       margin_{10.0, pi<double>() / 45.0},    // org 180.0
       finished_(false) {}
-std::cout << "theta"<< theta << "\n" 
+//std::cout << "theta"<< theta << "\n" theta出力したいまだやれてない
 void move::move_to(double x, double y, double theta) {
   target_ = {x, y, theta};
 }

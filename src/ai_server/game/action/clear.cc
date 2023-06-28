@@ -7,7 +7,10 @@
 #include "ai_server/model/motion/turn_left.h"
 #include "ai_server/model/motion/turn_right.h"
 #include <iostream>//omega表示のため
+#include "ai_server/util/math/distance.h"//distance表示のため
+#include "ai_server/util/math/detail/direction.h"//direction表示のため
 
+using namespace std;
 namespace ai_server::game::action {
 clear::clear(context& ctx, unsigned int id) : base(ctx, id) {}
 
@@ -17,7 +20,7 @@ bool clear::finished() const {
 }
 model::command clear::execute() {
  model::command command{};
- // 自チームのロボットの情報を取得
+ // 自チームのロボットの情報を取得するプログラム
  const auto our_robots = model::our_robots(world(), team_color());
  // 自分の情報がなければ終了
  if (!our_robots.count(id_)) return command;
@@ -31,13 +34,16 @@ model::command clear::execute() {
  // 向きが合っていなければ回転 (前進のモーションはキャンセルされる)
  constexpr double rot_th = 0.5;
  auto omega = util::math::direction_from(util::math::direction(ball_pos,robot_pos),robot.theta());
- if (rot_th <
-    util::math::inferior_angle(robot.theta(),
-        util::math::direction(ball_pos, robot_pos))) {
+ auto dista = util::math::distance(ball_pos,robot_pos);
+ auto dire = util::math::direction(ball_pos,robot_pos);
+ if (rot_th < omega ) {
  command.set_motion(std::make_shared<model::motion::turn_left>());
  } else if (omega < -rot_th) {
     command.set_motion(std::make_shared<model::motion::turn_right>());
  }
+ cout << "omega" << omega << "\n";
+ cout << "2店の距離"  << dista << "\n";
+ cout << "2店の角度"  << dire << "\n";
  return command;
 }
 
