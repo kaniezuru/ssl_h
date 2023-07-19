@@ -37,25 +37,47 @@ model::command clear::execute() {
  const auto robot_pos = util::math::position(robot);
  const auto ball_pos = util::math::position(world().ball());      // mw
  
- auto rad = 150;
- auto hiru = 0;
+ auto rad = 123.0;
  // 前進
  command.set_motion(std::make_shared<model::motion::walk_forward>());
  // 向きが合っていなければ回転 (前進のモーションはキャンセルされる)
 Eigen::Vector2d pos = ball_pos - rad * (ball_pos-target_0).normalized();
  constexpr double rot_th = 0.5;
+ //rot_tsは角度のこと。0.5はだいたい30度。1なら60度
+ auto r_b_dis = util::math::distance(ball_pos,robot_pos);
+ std::cout << "R_B_distance" << r_b_dis << "\n";
  auto omega = util::math::direction_from(util::math::direction(pos,robot_pos),robot.theta());
  auto dista = util::math::distance(ball_pos,robot_pos);
  auto dire = util::math::direction(ball_pos,robot_pos);
+ auto pos_pos = util::math::distance(pos,robot_pos);
+ auto dire_rt = util::math::direction(robot_pos,target_0);
+ auto dire_bt = util::math::direction(ball_pos,target_0);
+ auto dista_rt = util::math::distance(robot_pos,target_0);
+ auto dista_bt = util::math::distance(ball_pos,target_0);
+ Eigen::Vector2d p1,p2 ;
+ const auto mergin_r = 110.0;
+ std::tie(p1,p2) = util::math::calc_isosceles_vertexes(robot_pos, ball_pos ,mergin_r);
  if (rot_th < omega ) {
  command.set_motion(std::make_shared<model::motion::turn_left>());
  } else if (omega < -rot_th) {
     command.set_motion(std::make_shared<model::motion::turn_right>());
  }
- cout << "omega" << omega << "\n";
+ if (dire_rt == dire_bt && dista_rt < dista_bt){
+  if(util::math::distance(pos,p1) < util::math::distance(pos,p2)){
+         pos= p1;
+   } else{
+         pos= p2;
+   }
+ if(pos_pos<=50){
+  pos = ball_pos;
+ }  }
+ 
+ //cout << "omega" << omega << "\n";
  cout << "2店の距離"  << dista << "\n";
- cout << "2店の角度"  << dire << "\n";
+ //cout << "2店の角度"  << dire << "\n";
  cout << "pos" << pos <<"\n";
+ //cout << "pos_pos " << pos_pos <<"\n";
+ //cout << "normalized" << normalized << "\n";
  return command;
 }
 

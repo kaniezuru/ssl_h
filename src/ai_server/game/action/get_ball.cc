@@ -13,7 +13,7 @@
 #include "ai_server/model/motion/kick_forward_r.h"
 #include <iostream>  //omega表示のため
 
-using boost::math::constants::pi;
+using boost::math::constants::pi; //mw3.14
 
 namespace ai_server {
 namespace game {
@@ -23,32 +23,32 @@ get_ball::get_ball(context& ctx, unsigned int id, const Eigen::Vector2d& target)
     : base(ctx, id),
       state_(running_state::move),
       target_(target),
-      kick_margin_(200),
+      kick_margin_(200),   //　目標地点との許容誤差
       manual_kick_flag_({model::command::kick_type_t::line, 45}),
-      auto_kick_pow_(45, 100),
+      auto_kick_pow_(45, 100),  //チップキックとストレートキックパワーの設定
       kick_manually_(true),
-      allow_(20) {}    // org 10
+      allow_(10) {}    // org 10　共用誤差 もとは２０
 
 get_ball::get_ball(context& ctx, unsigned int id)
-    : get_ball(ctx, id, Eigen::Vector2d(ctx.world.field().x_max(), 0.0)) {}
+    : get_ball(ctx, id, Eigen::Vector2d(ctx.world.field().x_max(), 0.0)) {} //ゴール中央の位置にtarget
 
 get_ball::running_state get_ball::state() const {
   return state_;
 }
 
-void get_ball::set_target(double x, double y) {
+void get_ball::set_target(double x, double y) {　　//座標指定にtarget
   target_ = Eigen::Vector2d{x, y};
 }
 
-void get_ball::set_target(const Eigen::Vector2d& t) {
+void get_ball::set_target(const Eigen::Vector2d& t) {　　//指定ベクトルにgetball　
   target_ = t;
 }
 
-void get_ball::set_kick_margin(double margin) {
+void get_ball::set_kick_margin(double margin) {　　//ボールに接近した距離
   kick_margin_ = margin;
 }
 
-void get_ball::set_allow(double allow) {
+void get_ball::set_allow(double allow) {　　　　//許容誤差
   allow_ = allow;
 }
 
@@ -103,7 +103,7 @@ model::command get_ball::execute() {
   const Eigen::Vector2d ball_pos  = util::math::position(world().ball());
   const Eigen::Vector2d ball_vel  = util::math::velocity(world().ball());
 
-  if ((ball_pos - target_).norm() < allow_) {
+  if ((ball_pos - target_).norm() < allow_) {  //ボールとターゲットの距離が許容差以下の場合　getballを終了
     state_ = running_state::finished;
     return command;
   }
@@ -155,12 +155,12 @@ model::command get_ball::execute() {
       } 
                  
       const double rad =
-          std::abs(util::math::wrap_to_pi(
+          std::abs(util::math::wrap_to_pi( //-180から180み正規化
               robot.theta() - std::atan2(ball_pos.y() - robot_pos.y(),
                                          ball_pos.x() - robot_pos.x()))) < 0.2 * pi<double>()
-              ? 150.0   // mw
+              ? 90.0   // mw
               // ? 90.0  // org 90 150
-              : 180.0;
+              : 150.0;
       Eigen::Vector2d pos = ball_pos + rad * (ball_pos - target_).normalized();
       if (std::abs(util::math::wrap_to_pi(
               std::atan2(robot_pos.y() - ball_pos.y(), robot_pos.x() - ball_pos.x()) -
