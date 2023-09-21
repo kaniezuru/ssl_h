@@ -37,12 +37,12 @@ model::command clear::execute() {
  const auto robot_pos = util::math::position(robot);
  const auto ball_pos = util::math::position(world().ball());      // mw
  
- auto rad = 123.0;
+ auto rad = 90.0;
  // 前進
  command.set_motion(std::make_shared<model::motion::walk_forward>());
  // 向きが合っていなければ回転 (前進のモーションはキャンセルされる)
 Eigen::Vector2d pos = ball_pos - rad * (ball_pos-target_0).normalized();
- constexpr double rot_th = 0.5;
+ constexpr double rot_th = 0.3;
  //rot_tsは角度のこと。0.5はだいたい30度。1なら60度
  auto r_b_dis = util::math::distance(ball_pos,robot_pos);
  std::cout << "R_B_distance" << r_b_dis << "\n";
@@ -55,7 +55,7 @@ Eigen::Vector2d pos = ball_pos - rad * (ball_pos-target_0).normalized();
  auto dista_rt = util::math::distance(robot_pos,target_0);
  auto dista_bt = util::math::distance(ball_pos,target_0);
  Eigen::Vector2d p1,p2 ;
- const auto mergin_r = 110.0;
+ const auto mergin_r = 200.0;
  std::tie(p1,p2) = util::math::calc_isosceles_vertexes(robot_pos, ball_pos ,mergin_r);
  if (rot_th < omega ) {
  command.set_motion(std::make_shared<model::motion::turn_left>());
