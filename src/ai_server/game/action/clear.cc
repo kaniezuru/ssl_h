@@ -48,7 +48,7 @@ Eigen::Vector2d pos = ball_pos - rad * (ball_pos-target_0).normalized();
  std::cout << "R_B_distance" << r_b_dis << "\n";
  auto omega = util::math::direction_from(util::math::direction(pos,robot_pos),robot.theta());
  auto dista = util::math::distance(ball_pos,robot_pos);
- auto dire = util::math::direction(ball_pos,robot_pos);
+ //auto dire = util::math::direction(ball_pos,robot_pos);
  auto pos_pos = util::math::distance(pos,robot_pos);
  auto dire_rt = util::math::direction(robot_pos,target_0);
  auto dire_bt = util::math::direction(ball_pos,target_0);
@@ -72,7 +72,7 @@ Eigen::Vector2d pos = ball_pos - rad * (ball_pos-target_0).normalized();
   pos = ball_pos;
  }  }
  
- //cout << "omega" << omega << "\n";
+ cout << "omega" << omega << "\n";
  cout << "2店の距離"  << dista << "\n";
  //cout << "2店の角度"  << dire << "\n";
  cout << "pos" << pos <<"\n";
